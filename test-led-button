@@ -1,0 +1,144 @@
+////LED////
+//#define led1 47
+//#define led2 48
+//#define led3 45
+//
+//void setup() {
+//  pinMode(led1, OUTPUT);
+//  pinMode(led2, OUTPUT);
+//  pinMode(led3, OUTPUT);
+//}
+//
+//void loop() {
+//  // put your main code here, to run repeatedly:
+//  digitalWrite(led1, HIGH);
+//  delay(100);
+//  digitalWrite(led1, LOW);
+//  digitalWrite(led2, HIGH);
+//  delay(100);
+//  digitalWrite(led2, LOW);
+//  digitalWrite(led3, HIGH);
+//  delay(100);
+//  digitalWrite(led3, LOW);
+//}
+
+#define button1 6
+#define button2 7
+#define button3 15
+#define button4 16
+#define subbut 17
+
+#define led1_1 45
+#define led1_2 48
+#define led1_3 47
+
+#define led2_1 0
+#define led2_2 35
+#define led2_3 36
+
+#define led3_1 46
+#define led3_2 9
+#define led3_3 10
+
+#define led4_1 18
+#define led4_2 8
+#define led4_3 3
+
+#define subbutled 37
+
+
+int butstate1 = 0;
+int butstate2 = 0;
+int butstate3 = 0;
+int butstate4 = 0;
+int butstatesub = 0;
+int state1 = 0;
+int state2 = 0;
+int state3 = 0;
+int state4 = 0; 
+int substate = 0;
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(button1, INPUT_PULLUP);
+  pinMode(button2, INPUT_PULLUP);
+  pinMode(button3, INPUT_PULLUP);
+  pinMode(button4, INPUT_PULLUP);
+  pinMode(subbut, INPUT_PULLUP);
+  pinMode(led1_1, OUTPUT);
+  pinMode(led1_2, OUTPUT);
+  pinMode(led1_3, OUTPUT);
+  pinMode(led2_1, OUTPUT);
+  pinMode(led2_2, OUTPUT);
+  pinMode(led2_3, OUTPUT);
+  pinMode(led3_1, OUTPUT);
+  pinMode(led3_2, OUTPUT);
+  pinMode(led3_3, OUTPUT);
+  pinMode(led4_1, OUTPUT);
+  pinMode(led4_2, OUTPUT);
+  pinMode(led4_3, OUTPUT);
+  pinMode(subbutled, OUTPUT);
+}
+
+void loop() {
+  scanbutton(button1, butstate1,state1);
+  scanbutton(button2, butstate2,state2);
+  scanbutton(button3, butstate3,state3);
+  scanbutton(button4, butstate4,state4);
+  scanbutton(subbut, butstatesub,substate);
+  
+//  int reading = digitalRead(button1);
+//
+//  if (reading == LOW && butstate1 == 0) {
+//    Serial.println("Button pressed ",1);
+//    butstate1 = 1;
+//    state1 ++;
+//  } else if (reading == HIGH) {
+//    butstate1 = 0;
+//  }
+
+  state1 = state1 % 4;
+  state2 = state2 % 4;
+  state3 = state3 % 4;
+  state4 = state4 % 4;
+  stateLED(state1,led1_1,led1_2,led1_3);
+  stateLED(state2,led2_1,led2_2,led2_3);
+  stateLED(state3,led3_1,led3_2,led3_3);
+  stateLED(state4,led4_1,led4_2,led4_3);
+}
+
+void scanbutton(int button, int &butstate, int &state) {
+  int reading = digitalRead(button);
+  if (reading == LOW && butstate == 0) {
+    Serial.print(button);
+    Serial.println(" Pressed");
+    butstate = 1;
+    state++;
+  } else if (reading == HIGH) {
+    butstate = 0;
+  }
+}
+
+void stateLED(int state,int led1,int led2,int led3){
+//  Serial.println(state1);
+  if (state == 0){
+    digitalWrite(led1,LOW);
+    digitalWrite(led2,LOW);
+    digitalWrite(led3,LOW);
+    }
+  else if (state == 1){
+    digitalWrite(led1,HIGH);
+    digitalWrite(led2,LOW);
+    digitalWrite(led3,LOW);
+    }
+  else if (state == 2){
+    digitalWrite(led1,LOW);
+    digitalWrite(led2,HIGH);
+    digitalWrite(led3,LOW);
+    }
+  else {
+    digitalWrite(led1,LOW);
+    digitalWrite(led2,LOW);
+    digitalWrite(led3,HIGH);
+    }
+  }
