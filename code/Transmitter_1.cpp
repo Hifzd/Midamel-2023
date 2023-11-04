@@ -16,9 +16,9 @@
 #define but_4 7
 #define but_sub 8 // Button Submit
 
-#define led1_1 15
-#define led1_2 18
-#define led1_3 17
+#define led1_1 45
+#define led1_2 48
+#define led1_3 47
 
 int count; 
 
@@ -46,10 +46,11 @@ void setup() {
   pinMode(but_2, INPUT_PULLUP);
   pinMode(but_3, INPUT_PULLUP);
   pinMode(but_4, INPUT_PULLUP);
-  pinMode(GRN, OUTPUT);
-  pinMode(YLL, OUTPUT);
-  pinMode(RED, OUTPUT);
-
+  pinMode(butsub, INPUT_PULLUP);
+  pinMode(led1_1, OUTPUT);
+  pinMode(led1_2, OUTPUT);
+  pinMode(led1_3, OUTPUT);
+  
 
   Serial.println("LoRa Sender");
   LoRa.setPins(NSS, RST, DI0);
@@ -66,12 +67,14 @@ void setup() {
 bool but1_state = 0;
 int state1 = 0;
 bool butsub_state = 0;
+
 void loop() {
 
 unsigned long time = millis();
 unsigned long last_time = millis();
 
 Package paket;
+
 if ((digitalRead(but_1)==LOW) && (but1_state == 0))
   {
     but1_state = 1;
@@ -112,7 +115,6 @@ if ((digitalRead(but_sub)==LOW) && (butsub_state == 0))
   {
     butsub_state = 0;
   }
-
 time = millis();
 if (time - last_time > 5000){
   last_time = millis();
@@ -124,28 +126,3 @@ if (time - last_time > 5000){
   Serial.println("Sent LoRa packet: on");
 }
 }
-//     }
-    
-//     delay(100);
-    
-    // if (count == 0) {
-    //   LoRa.beginPacket();
-    //   LoRa.print("off_blue");
-    //   LoRa.endPacket();
-    //   Serial.println("Sent LoRa packet: off");
-    // }
-    // delay(10000);
-
-//  if (button_status == 1) {
-//    LoRa.beginPacket();
-//    LoRa.print("on");
-//    LoRa.endPacket();
-//    Serial.println("Sent LoRa packet: on");
-//  }
-//
-//  if (button_status == 0) {
-//    LoRa.beginPacket();
-//    LoRa.print("off");
-//    LoRa.endPacket();
-//    Serial.println("Sent LoRa packet: off");
-//  }

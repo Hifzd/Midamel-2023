@@ -1,19 +1,26 @@
 #include <SPI.h>
 #include <LoRa.h>
 #include <Arduino.h>
-using namespace std;
 
 #define NSS 5
 #define RST 14
 #define DI0 2
 
-#define BUTTON 4
 #define GRN 21
 #define YLL 19
 #define RED 18
 
-int count; 
+#define but_1 3
+#define but_2 4
+#define but_3 6
+#define but_4 7
+#define but_sub 8 // Button Submit
 
+#define led1_1 15
+#define led1_2 18
+#define led1_3 17
+
+int count; 
 
 uint8_t button_status = 0;
 
@@ -34,53 +41,88 @@ void IRAM_ATTR ISR() {
 }
 
 void setup() {
-  Serial.begin(9600);
-  pinMode(BUTTON, INPUT_PULLUP);
+  Serial.begin(115200);
+  pinMode(but_1, INPUT_PULLUP);
+  pinMode(but_2, INPUT_PULLUP);
+  pinMode(but_3, INPUT_PULLUP);
+  pinMode(but_4, INPUT_PULLUP);
   pinMode(GRN, OUTPUT);
   pinMode(YLL, OUTPUT);
   pinMode(RED, OUTPUT);
 
 
+  Serial.println("LoRa Sender");
+  LoRa.setPins(NSS, RST, DI0);
 
+  while (!LoRa.begin(433E6)) {
+    Serial.println(".");
+    delay(500);
+  }
 
-
-//   attachInterrupt(BUTTON, ISR, FALLING);
-
-//   Serial.println("LoRa Sender");
-//   LoRa.setPins(NSS, RST, DI0);
-
-//   while (!LoRa.begin(433E6)) {
-//     Serial.println(".");
-//     delay(500);
-//   }
-
-//   LoRa.setSyncWord(0xF1);
-//   Serial.println("LoRa Initializing Successful!");
+  LoRa.setSyncWord(0xF1);
+  Serial.println("LoRa Initializing Successful!");
 }
 
-bool pencet = 1;
+bool but1_state = 0;
+int state1 = 0;
+bool butsub_state = 0;
 void loop() {
-  // Serial.print("Sending packet: ");
-  
-  Package paket;
-  paket.kelasA = 0;
-  paket.kelasB = 1;
-  paket.kelasC = 2;
-  paket.kelasD = 3;
-//   count = 0;
-//     if (count == 0) {
-//       LoRa.beginPacket();
-//       LoRa.print(toSTR(paket));
-//       LoRa.endPacket();
-//       Serial.println("Sent LoRa packet: on");
 
-  if ((digitalRead(BUTTON)==LOW)&&(pencet)){
-     Serial.println(toSTR(paket));     
-     pencet = 0;
+unsigned long time = millis();
+unsigned long last_time = millis();
+
+Package paket;
+if ((digitalRead(but_1)==LOW) && (but1_state == 0))
+  {
+    but1_state = 1;
+    state1 ++;
+    if (state1 & 3 == 0){
+      digitalWrite(led1_1, HIGH);
+      digitalWrite(led1_2, LOW);
+      digitalWrite(led1_3, LOW);
+      }
+    else if (state1 & 3 == 1){
+      digitalWrite(led1_1, LOW);
+      digitalWrite(led1_2, HIGH);
+      digitalWrite(led1_3, LOW);
+    }
+    else if (state1 & 3 == 2){
+      digitalWrite(led1_1, LOW);
+      digitalWrite(led1_2, LOW);
+      digitalWrite(led1_3, HIGH);}
+  } else if (digitalRead(but_1) == HIGH)
+  {
+    but1_state = 0;
   }
-  if(digitalRead(BUTTON) == HIGH) {
-    pencet = 1;
+
+
+if ((digitalRead(but_sub)==LOW) && (butsub_state == 0))
+  {
+    butsub_state = 1;
+    Serial.print("Saving packet: ");
+    
+    paket.kelasA = state1 % 3;
+    paket.kelasB = 0;
+    paket.kelasC = 0;
+    paket.kelasD = 0;
+
+    
+
+  } else if (digitalRead(but_4) == HIGH)
+  {
+    butsub_state = 0;
   }
+
+time = millis();
+if (time - last_time > 5000){
+  last_time = millis();
+
+  Serial.print("Sending packet: ");
+  LoRa.beginPacket();
+  LoRa.print(toSTR(paket));
+  LoRa.endPacket();
+  Serial.println("Sent LoRa packet: on");
+}
 }
 //     }
     
