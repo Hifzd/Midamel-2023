@@ -10,15 +10,15 @@
 #define YLL 19
 #define RED 18
 
-#define but_1 3
-#define but_2 4
-#define but_3 6
-#define but_4 7
+#define but_1 4
+//#define but_2 4
+//#define but_3 6
+//#define but_4 7
 #define but_sub 8 // Button Submit
 
-#define led1_1 45
-#define led1_2 48
-#define led1_3 47
+// #define led1_1 45
+// #define led1_2 48
+// #define led1_3 47
 
 int count; 
 
@@ -43,25 +43,25 @@ void IRAM_ATTR ISR() {
 void setup() {
   Serial.begin(115200);
   pinMode(but_1, INPUT_PULLUP);
-  pinMode(but_2, INPUT_PULLUP);
-  pinMode(but_3, INPUT_PULLUP);
-  pinMode(but_4, INPUT_PULLUP);
-  pinMode(butsub, INPUT_PULLUP);
-  pinMode(led1_1, OUTPUT);
-  pinMode(led1_2, OUTPUT);
-  pinMode(led1_3, OUTPUT);
+  // pinMode(but_2, INPUT_PULLUP);
+  // pinMode(but_3, INPUT_PULLUP);
+  // pinMode(but_4, INPUT_PULLUP);
+  pinMode(but_sub, INPUT_PULLUP);
+  // pinMode(led1_1, OUTPUT);
+  // pinMode(led1_2, OUTPUT);
+  // pinMode(led1_3, OUTPUT);
   
 
-  Serial.println("LoRa Sender");
-  LoRa.setPins(NSS, RST, DI0);
+  // Serial.println("LoRa Sender");
+  // LoRa.setPins(NSS, RST, DI0);
 
-  while (!LoRa.begin(433E6)) {
-    Serial.println(".");
-    delay(500);
-  }
+  // while (!LoRa.begin(433E6)) {
+  //   Serial.println(".");
+  //   delay(500);
+  // }
 
-  LoRa.setSyncWord(0xF1);
-  Serial.println("LoRa Initializing Successful!");
+  // LoRa.setSyncWord(0xF1);
+  // Serial.println("LoRa Initializing Successful!");
 }
 
 bool but1_state = 0;
@@ -80,19 +80,20 @@ if ((digitalRead(but_1)==LOW) && (but1_state == 0))
     but1_state = 1;
     state1 ++;
     if (state1 & 3 == 0){
-      digitalWrite(led1_1, HIGH);
-      digitalWrite(led1_2, LOW);
-      digitalWrite(led1_3, LOW);
+      digitalWrite(RED, HIGH);
+      digitalWrite(YLL, LOW);
+      digitalWrite(GRN, LOW);
       }
     else if (state1 & 3 == 1){
-      digitalWrite(led1_1, LOW);
-      digitalWrite(led1_2, HIGH);
-      digitalWrite(led1_3, LOW);
+      digitalWrite(RED, LOW);
+      digitalWrite(YLL, HIGH);
+      digitalWrite(GRN, LOW);
     }
     else if (state1 & 3 == 2){
-      digitalWrite(led1_1, LOW);
-      digitalWrite(led1_2, LOW);
-      digitalWrite(led1_3, HIGH);}
+      digitalWrite(RED, LOW);
+      digitalWrite(YLL, LOW);
+      digitalWrite(GRN, HIGH);
+      }
   } else if (digitalRead(but_1) == HIGH)
   {
     but1_state = 0;
@@ -109,20 +110,19 @@ if ((digitalRead(but_sub)==LOW) && (butsub_state == 0))
     paket.kelasC = 0;
     paket.kelasD = 0;
 
-    
 
-  } else if (digitalRead(but_4) == HIGH)
-  {
-    butsub_state = 0;
-  }
-time = millis();
-if (time - last_time > 5000){
-  last_time = millis();
+//   } else if (digitalRead(but_4) == HIGH)
+//   {
+//     butsub_state = 0;
+//   }
+// time = millis();
+// if (time - last_time > 5000){
+//   last_time = millis();
 
-  Serial.print("Sending packet: ");
-  LoRa.beginPacket();
-  LoRa.print(toSTR(paket));
-  LoRa.endPacket();
-  Serial.println("Sent LoRa packet: on");
+//   Serial.print("Sending packet: ");
+//   LoRa.beginPacket();
+//   LoRa.print(toSTR(paket));
+//   LoRa.endPacket();
+//   Serial.println("Sent LoRa packet: on");
 }
 }
