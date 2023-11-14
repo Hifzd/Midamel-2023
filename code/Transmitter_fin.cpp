@@ -9,7 +9,7 @@ int but1_count = 0;
 #define led1_2 16
 #define led1_3 17
 
-#define butsub 5
+#define butsub 18
 #define led_butsub 6
 int butsub_state = 0;
 int butsub_on = 0;
